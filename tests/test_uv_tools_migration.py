@@ -11,6 +11,9 @@ class TestUVToolsMigration:
         ("Pipfile", 'Pipfile_expected.toml'),
         ("Pipfile_no_dev_packages", 'Pipfile_no_dev_packages_expected.toml'),
         ("Pipfile_no_packages", 'Pipfile_no_packages_expected.toml'),
+        ("Pipfile_no_equals_version_in_packages", 'Pipfile_expected.toml'),
+        ("Pipfile_no_equals_version_in_dev_packages", 'Pipfile_expected.toml'),
+        ("Pipfile_no_equals_version_in_dev_and_packages", 'Pipfile_expected.toml'),
     ])
     def test_ok(self, tmp_path, mock_from_file, mock_expected_file):
         from_file = f'./tests/fixtures/{mock_from_file}'
