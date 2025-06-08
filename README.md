@@ -1,3 +1,5 @@
+![GitHub Actions CI](https://github.com/itcrab/uv-tools-migration/actions/workflows/python-package-ci.yml/badge.svg)
+
 # uv-tools-migration
 
 Migrate any projects from `pipenv` to `uv` without pain.
