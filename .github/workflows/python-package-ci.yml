@@ -26,10 +26,10 @@ jobs:
         python-version: ${{ matrix.python-version }}
     - name: Install dependencies
       run: |
-        echo "${{ matrix.python-version }}" > $(pwd)/.python-varsion
+        echo "${{ matrix.python-version }}" > ./.python-varsion
 
         python -m pip install --upgrade pip
-        pip install uv
+        pip install uv==0.7.12
         uv venv
         uv sync
     - name: Test with pytest
