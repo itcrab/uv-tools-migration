@@ -16,7 +16,7 @@ class TestUVToolsMigration:
         from_file = f'./tests/fixtures/{mock_from_file}'
         to_file = shutil.copy2('./tests/fixtures/pyproject.toml', tmp_path)
 
-        uv_tools_migration = UVToolsMigration(from_file, to_file, with_dev_packages=True)
+        uv_tools_migration = UVToolsMigration(from_file, to_file)
         uv_tools_migration.process()
 
         expected_file = f'./tests/fixtures/{mock_expected_file}'
@@ -26,7 +26,7 @@ class TestUVToolsMigration:
         from_file = './tests/fixtures/Pipfile_no_dev_and_packages'
         to_file = shutil.copy2('./tests/fixtures/pyproject.toml', tmp_path)
 
-        uv_tools_migration = UVToolsMigration(from_file, to_file, with_dev_packages=True)
+        uv_tools_migration = UVToolsMigration(from_file, to_file)
         with pytest.raises(ValueError) as e:
             uv_tools_migration.process()
 

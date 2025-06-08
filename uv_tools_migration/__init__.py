@@ -8,13 +8,11 @@ class UVToolsMigration:
     UVToolsMigration is tool for migration from `pipenv` to `uv`
     """
 
-    def __init__(self, from_file, to_file, with_dev_packages):
+    def __init__(self, from_file, to_file):
         self.from_file = from_file
         self.to_file = to_file
 
-        self.packages_types = ('packages',)
-        if with_dev_packages:
-            self.packages_types = ('dev-packages', 'packages')
+        self.packages_types = ('dev-packages', 'packages')
 
     def process(self):
         pipenv_data = self._get_pipenv_data()
