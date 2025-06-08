@@ -60,8 +60,9 @@ class UVToolsMigration:
                     packages_data[packages_type].append(f'{package}{version}')
                 elif isinstance(version, dict):
                     if 'git' not in version:
-                        continue
-                    elif 'ref' in version:
+                        raise ValueError(f'Pipfile have no `git` link to the repository in this case: {version}')
+
+                    if 'ref' in version:
                         version['rev'] = version.pop('ref')
 
                     package_name = version['git'].split('/')[-1].replace('.git', '')
