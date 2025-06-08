@@ -26,6 +26,8 @@ jobs:
         python-version: ${{ matrix.python-version }}
     - name: Install dependencies
       run: |
+        echo "${{ matrix.python-version }}" > $(pwd)/.python-varsion
+
         python -m pip install --upgrade pip
         pip install uv
         uv venv
