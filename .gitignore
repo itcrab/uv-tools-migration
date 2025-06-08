@@ -1,0 +1,9 @@
+# PyCharm, VSCode
+/.idea/
+/.vscode/
+
+# Python venv
+/.venv/
+
+# Examoles pipenv files
+/.examples/
