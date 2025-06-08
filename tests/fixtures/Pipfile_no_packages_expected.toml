@@ -1,0 +1,16 @@
+[project]
+name = "uv-tools-migration_tests"
+version = "2025.06.08"
+description = "Migrate any projects from pipenv to uv without pain"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = []
+
+[dependency-groups]
+dev = [
+    "django-debug-toolbar==5.2.0",
+    "django-timed-tests",
+]
+
+[tool.uv.sources]
+django-timed-tests = { git = "https://github.com/itcrab/django-timed-tests.git", rev = "feature/store-report-into-file" }

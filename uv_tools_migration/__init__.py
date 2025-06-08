@@ -18,6 +18,9 @@ class UVToolsMigration:
 
     def process(self):
         pipenv_data = self._get_pipenv_data()
+        if 'dev-packages' not in pipenv_data and 'packages' not in pipenv_data:
+            raise ValueError(f'Pipfile have no dev-packages and packages: {self.from_file}')
+
         packages_data = self._generate_packages_data(pipenv_data)
         self._generate_packages_into_uv_file(packages_data)
 
@@ -31,14 +34,14 @@ class UVToolsMigration:
         ```pyproject.toml
         ...
         dependencies = [
-            "django>=5.2.2",
-            "djangorestframework>=3.16.0",
-            "lxml>=5.4.0",
+            "django==5.2.2",
+            "djangorestframework==3.16.0",
+            "lxml==5.4.0",
         ]
         ...
         [dependency-groups]
         dev = [
-            "django-debug-toolbar>=5.2.0",
+            "django-debug-toolbar==5.2.0",
             "django-timed-tests",
         ]
         ...
@@ -48,6 +51,9 @@ class UVToolsMigration:
         """
         packages_data = {'dev-packages': [], 'packages': [], 'sources': ''}
         for packages_type in self.packages_types:
+            if packages_type not in pipenv_data:
+                continue
+
             for package, version in pipenv_data[packages_type].items():
                 if isinstance(version, str):
                     if version[0].isdigit():  # for case like: python-package = "1.0.2"
@@ -80,10 +86,12 @@ class UVToolsMigration:
             uv_data = tomllib.load(f)
 
         uv_data['project']['dependencies'] = packages_data['packages']
-        uv_data['dependency-groups'] = {'dev': packages_data['dev-packages']}
+        if packages_data['dev-packages']:
+            uv_data['dependency-groups'] = {'dev': packages_data['dev-packages']}
 
         uv_data_toml = tomli_w.dumps(uv_data)
-        uv_data_toml += f'\n[tool.uv.sources]\n{packages_data["sources"]}'
+        if packages_data["sources"]:
+            uv_data_toml += f'\n[tool.uv.sources]\n{packages_data["sources"]}'
 
         with open(self.to_file, "w") as f:
             f.write(uv_data_toml)
