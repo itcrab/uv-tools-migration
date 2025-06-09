@@ -5,7 +5,7 @@ description = "Migrate any projects from pipenv to uv without pain"
 readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
-    "tomli-w==1.2.0",
+    "tomli-w>=1.2.0",
 ]
 
 [dependency-groups]
