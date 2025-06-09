@@ -6,27 +6,28 @@ from tests.helpers import get_fixture_data
 from uv_tools_migration import UVToolsMigration
 
 
+
 class TestUVToolsMigration:
-    @pytest.mark.parametrize("mock_from_file,mock_expected_file", [
-        ("Pipfile", 'Pipfile_expected.toml'),
-        ("Pipfile_no_dev_packages", 'Pipfile_no_dev_packages_expected.toml'),
-        ("Pipfile_no_packages", 'Pipfile_no_packages_expected.toml'),
-        ("Pipfile_no_equals_version_in_packages", 'Pipfile_expected.toml'),
-        ("Pipfile_no_equals_version_in_dev_packages", 'Pipfile_expected.toml'),
-        ("Pipfile_no_equals_version_in_dev_and_packages", 'Pipfile_expected.toml'),
+    @pytest.mark.parametrize("mock_from_dir,mock_expected_dir", [
+        ("full_data", 'full_data'),
+        ("no_dev_packages", 'no_dev_packages'),
+        ("no_packages", 'no_packages'),
+        ("no_equals_version_in_packages", 'full_data'),
+        ("no_equals_version_in_dev_packages", 'full_data'),
+        ("no_equals_version_in_dev_and_packages", 'full_data'),
     ])
-    def test_ok(self, tmp_path, mock_from_file, mock_expected_file):
-        from_file = f'./tests/fixtures/{mock_from_file}'
+    def test_ok(self, tmp_path, mock_from_dir, mock_expected_dir):
+        from_file = f'./tests/fixtures/{mock_from_dir}/Pipfile'
         to_file = shutil.copy2('./tests/fixtures/pyproject.toml', tmp_path)
 
         uv_tools_migration = UVToolsMigration(from_file, to_file)
         uv_tools_migration.process()
 
-        expected_file = f'./tests/fixtures/{mock_expected_file}'
+        expected_file = f'./tests/fixtures/{mock_expected_dir}/pyproject.toml'
         assert get_fixture_data(to_file) == get_fixture_data(expected_file)
 
     def test_no_dev_and_packages(self, tmp_path):
-        from_file = './tests/fixtures/Pipfile_no_dev_and_packages'
+        from_file = './tests/fixtures/no_dev_and_packages/Pipfile'
         to_file = tmp_path / 'pyproject.toml'
 
         uv_tools_migration = UVToolsMigration(from_file, to_file)
@@ -36,7 +37,7 @@ class TestUVToolsMigration:
         assert str(e.value) == f'Pipfile have no dev-packages and packages: {from_file}'
 
     def test_no_git(self, tmp_path):
-        from_file = './tests/fixtures/Pipfile_no_git'
+        from_file = './tests/fixtures/no_git/Pipfile'
         to_file = tmp_path / 'pyproject.toml'
 
         uv_tools_migration = UVToolsMigration(from_file, to_file)
