@@ -32,6 +32,9 @@ jobs:
         pip install uv==0.7.12
         uv venv
         uv sync
+    - name: Lint with mypy
+      run: |
+        uv run mypy .
     - name: Test with pytest
       run: |
         export PYTHONPATH=$PYTHONPATH:$(pwd)

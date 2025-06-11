@@ -2,7 +2,7 @@ import shutil
 
 import pytest
 
-from tests.helpers import get_fixture_data
+from helpers import get_fixture_data
 from uv_tools_migration import UVToolsMigration
 
 

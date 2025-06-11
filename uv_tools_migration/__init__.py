@@ -10,13 +10,13 @@ class UVToolsMigration:
     UVToolsMigration is tool for migration from `pipenv` to `uv`
     """
 
-    def __init__(self, from_file, to_file):
+    def __init__(self, from_file: str, to_file: str) -> None:
         self.from_file = from_file
         self.to_file = to_file
 
         self.packages_types = ('dev-packages', 'packages')
 
-    def process(self):
+    def process(self) -> None:
         pipenv_data = self._get_pipenv_data(self.from_file)
         if 'dev-packages' not in pipenv_data and 'packages' not in pipenv_data:
             raise ValueError(f'Pipfile have no dev-packages and packages: {self.from_file}')
@@ -24,11 +24,11 @@ class UVToolsMigration:
         packages_data = self._generate_packages_data(pipenv_data)
         self._generate_packages_into_uv_file(packages_data)
 
-    def _get_pipenv_data(self, file_path):
+    def _get_pipenv_data(self, file_path: str) -> dict:
         with open(file_path, 'rb') as f:
             return tomllib.load(f)
 
-    def _generate_packages_data(self, pipenv_data):
+    def _generate_packages_data(self, pipenv_data: dict) -> dict[str, list[str | tuple[str, dict]]]:
         """
         uv packages list example:
         ```pyproject.toml
@@ -52,7 +52,7 @@ class UVToolsMigration:
         ...
         ```
         """
-        packages_data = {'dev-packages': [], 'packages': [], 'sources': []}
+        packages_data: dict[str, list[str | tuple[str, dict]]] = {'dev-packages': [], 'packages': [], 'sources': []}
         for packages_type in self.packages_types:
             if packages_type not in pipenv_data:
                 continue
@@ -72,7 +72,7 @@ class UVToolsMigration:
 
         return packages_data
 
-    def _generate_packages_into_uv_file(self, packages_data):
+    def _generate_packages_into_uv_file(self, packages_data: dict) -> None:
         source_render = SourcesTomlRender(packages_data['sources'])
 
         uv_data = self._get_pipenv_data(self.to_file)
