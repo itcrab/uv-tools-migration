@@ -52,12 +52,12 @@ class UVToolsMigration:
             if packages_type not in pipenv_data:
                 continue
 
-            for package, version in pipenv_data[packages_type].items():
+            for package_name, version in pipenv_data[packages_type].items():
                 if isinstance(version, str):
                     if version[0].isdigit():  # for case like: python-package = "1.0.2"
                         version = f'=={version}'
 
-                    packages_data[packages_type].append(f'{package}{version}')
+                    packages_data[packages_type].append(f'{package_name}{version}')
                 elif isinstance(version, dict):
                     if 'git' not in version:
                         raise ValueError(f'Pipfile have no `git` link to the repository in this case: {version}')
@@ -65,7 +65,6 @@ class UVToolsMigration:
                     if 'ref' in version:
                         version['rev'] = version.pop('ref')
 
-                    package_name = version['git'].split('/')[-1].replace('.git', '')
                     packages_data[packages_type].append(package_name)
 
                     packages_data['sources'] += f'{package_name} = {{ '
