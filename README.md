@@ -28,4 +28,10 @@ Run tests in terminal:
 uv run -m pytest -s
 ```
 
+Run linters in terminal:
+```Bash
+uv run mypy .
+uv run ruff check
+```
+
 Have a nice days!

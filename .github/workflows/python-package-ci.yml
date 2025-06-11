@@ -35,6 +35,9 @@ jobs:
     - name: Lint with mypy
       run: |
         uv run mypy .
+    - name: Lint with ruff
+      run: |
+        uv run ruff check
     - name: Test with pytest
       run: |
         export PYTHONPATH=$PYTHONPATH:$(pwd)

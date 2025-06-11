@@ -7,13 +7,13 @@ from uv_tools_migration import UVToolsMigration
 
 
 class TestUVToolsMigration:
-    @pytest.mark.parametrize("mock_from_dir,mock_expected_dir", [
-        ("full_data", 'full_data'),
-        ("no_dev_packages", 'no_dev_packages'),
-        ("no_packages", 'no_packages'),
-        ("no_equals_version_in_packages", 'full_data'),
-        ("no_equals_version_in_dev_packages", 'full_data'),
-        ("no_equals_version_in_dev_and_packages", 'full_data'),
+    @pytest.mark.parametrize('mock_from_dir,mock_expected_dir', [
+        ('full_data', 'full_data'),
+        ('no_dev_packages', 'no_dev_packages'),
+        ('no_packages', 'no_packages'),
+        ('no_equals_version_in_packages', 'full_data'),
+        ('no_equals_version_in_dev_packages', 'full_data'),
+        ('no_equals_version_in_dev_and_packages', 'full_data'),
     ])
     def test_ok(self, tmp_path, mock_from_dir, mock_expected_dir):
         from_file = f'./tests/fixtures/uv_tools_migration/{mock_from_dir}/Pipfile'

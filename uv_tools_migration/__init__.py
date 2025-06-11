@@ -80,10 +80,10 @@ class UVToolsMigration:
         if packages_data['dev-packages']:
             uv_data['dependency-groups'] = {'dev': packages_data['dev-packages']}
 
-        with open(self.to_file, "w") as f:
+        with open(self.to_file, 'w') as f:
             uv_data_toml = tomli_w.dumps(uv_data)
             f.write(uv_data_toml)
 
-            if packages_data["sources"]:
+            if packages_data['sources']:
                 uv_sources_toml = source_render.render()
                 f.write(uv_sources_toml)

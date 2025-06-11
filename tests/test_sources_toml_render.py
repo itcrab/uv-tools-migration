@@ -8,7 +8,7 @@ class TestSourcesTomlRender:
             ('django-timed-tests', {'git': "https://github.com/itcrab/django-timed-tests", 'rev': "feature/store-report-into-file"}),
         ]).render()
 
-        expected_file = f'./tests/fixtures/sources_toml_render/ok/sources.toml'
+        expected_file = './tests/fixtures/sources_toml_render/ok/sources.toml'
         assert sources_toml == get_fixture_data(expected_file)
 
     def test_blank(self):
