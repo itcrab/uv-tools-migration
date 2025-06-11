@@ -2,6 +2,8 @@ import tomllib
 
 import tomli_w
 
+from uv_tools_migration.renders import SourcesTomlRender
+
 
 class UVToolsMigration:
     """
@@ -15,21 +17,23 @@ class UVToolsMigration:
         self.packages_types = ('dev-packages', 'packages')
 
     def process(self):
-        pipenv_data = self._get_pipenv_data()
+        pipenv_data = self._get_pipenv_data(self.from_file)
         if 'dev-packages' not in pipenv_data and 'packages' not in pipenv_data:
             raise ValueError(f'Pipfile have no dev-packages and packages: {self.from_file}')
 
         packages_data = self._generate_packages_data(pipenv_data)
         self._generate_packages_into_uv_file(packages_data)
 
-    def _get_pipenv_data(self):
-        with open(self.from_file, 'rb') as f:
+    def _get_pipenv_data(self, file_path):
+        with open(file_path, 'rb') as f:
             return tomllib.load(f)
 
     def _generate_packages_data(self, pipenv_data):
         """
         uv packages list example:
         ```pyproject.toml
+        ...
+        [project]
         ...
         dependencies = [
             "django==5.2.2",
@@ -45,9 +49,10 @@ class UVToolsMigration:
         ...
         [tool.uv.sources]
         django-timed-tests = { git = "https://github.com/itcrab/django-timed-tests", rev = "feature/store-report-into-file" }
+        ...
         ```
         """
-        packages_data = {'dev-packages': [], 'packages': [], 'sources': ''}
+        packages_data = {'dev-packages': [], 'packages': [], 'sources': []}
         for packages_type in self.packages_types:
             if packages_type not in pipenv_data:
                 continue
@@ -59,37 +64,26 @@ class UVToolsMigration:
 
                     packages_data[packages_type].append(f'{package_name}{version}')
                 elif isinstance(version, dict):
-                    if 'git' not in version:
-                        raise ValueError(f'Pipfile have no `git` link to the repository in this case: {version}')
-
-                    if 'ref' in version:
-                        version['rev'] = version.pop('ref')
-
                     packages_data[packages_type].append(package_name)
 
-                    packages_data['sources'] += f'{package_name} = {{ '
-                    for key in version:
-                        if key == 'editable':
-                            continue
-                        packages_data['sources'] += f'{key} = "{version[key]}", '
-                    packages_data['sources'] = packages_data['sources'][:-2]
-                    packages_data['sources'] += ' }\n'
+                    packages_data['sources'].append((package_name, version))
 
             packages_data[packages_type].sort()
 
         return packages_data
 
     def _generate_packages_into_uv_file(self, packages_data):
-        with open(self.to_file, 'rb') as f:
-            uv_data = tomllib.load(f)
+        source_render = SourcesTomlRender(packages_data['sources'])
 
+        uv_data = self._get_pipenv_data(self.to_file)
         uv_data['project']['dependencies'] = packages_data['packages']
         if packages_data['dev-packages']:
             uv_data['dependency-groups'] = {'dev': packages_data['dev-packages']}
 
-        uv_data_toml = tomli_w.dumps(uv_data)
-        if packages_data["sources"]:
-            uv_data_toml += f'\n[tool.uv.sources]\n{packages_data["sources"]}'
-
         with open(self.to_file, "w") as f:
+            uv_data_toml = tomli_w.dumps(uv_data)
             f.write(uv_data_toml)
+
+            if packages_data["sources"]:
+                uv_sources_toml = source_render.render()
+                f.write(uv_sources_toml)
