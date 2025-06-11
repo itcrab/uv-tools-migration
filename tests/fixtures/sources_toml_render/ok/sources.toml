@@ -1,0 +1,3 @@
+
+[tool.uv.sources]
+django-timed-tests = { git = "https://github.com/itcrab/django-timed-tests", rev = "feature/store-report-into-file" }
