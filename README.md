@@ -23,4 +23,9 @@ Run `app.py` for got packages from your `Pipfile` into `pyproject.toml`:
 uv run app.py
 ```
 
+Run tests in terminal:
+```Bash
+uv run -m pytest -s
+```
+
 Have a nice days!
