@@ -76,6 +76,9 @@ class UVToolsMigration:
         source_render = SourcesTomlRender(packages_data['sources'])
 
         uv_data = self._get_pipenv_data(self.to_file)
+        self._clear_uv_data_dev_packages(uv_data)
+        self._clear_uv_data_sources(uv_data)
+
         uv_data['project']['dependencies'] = packages_data['packages']
         if packages_data['dev-packages']:
             uv_data['dependency-groups'] = {'dev': packages_data['dev-packages']}
@@ -87,3 +90,23 @@ class UVToolsMigration:
             if source_render.will_render:
                 uv_sources_toml = source_render.render()
                 f.write(uv_sources_toml)
+
+    @staticmethod
+    def _clear_uv_data_dev_packages(uv_data: dict) -> None:
+        if 'dependency-groups' in uv_data:
+            uv_data['dependency-groups'].pop('dev', None)
+            if not uv_data['dependency-groups']:
+                uv_data.pop('dependency-groups')
+
+    @staticmethod
+    def _clear_uv_data_sources(uv_data: dict) -> None:
+        if 'tool' in uv_data:
+            if 'uv' in uv_data['tool']:
+                if 'sources' in uv_data['tool']['uv']:
+                    uv_data['tool']['uv'].pop('sources')
+
+                if not uv_data['tool']['uv']:
+                    uv_data['tool'].pop('uv')
+
+            if not uv_data['tool']:
+                uv_data.pop('tool')

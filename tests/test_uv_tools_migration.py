@@ -25,6 +25,16 @@ class TestUVToolsMigration:
         expected_file = f'./tests/fixtures/uv_tools_migration/{mock_expected_dir}/pyproject.toml'
         assert get_fixture_data(to_file) == get_fixture_data(expected_file)
 
+    def test_clean_full_data__dev_packages_and_sources(self, tmp_path):
+        from_file = './tests/fixtures/uv_tools_migration/no_dev_packages/Pipfile'
+        to_file = shutil.copy2('./tests/fixtures/uv_tools_migration/full_data/pyproject.toml', tmp_path)
+
+        uv_tools_migration = UVToolsMigration(from_file, to_file)
+        uv_tools_migration.process()
+
+        expected_file = './tests/fixtures/uv_tools_migration/no_dev_packages/pyproject.toml'
+        assert get_fixture_data(to_file) == get_fixture_data(expected_file)
+
     def test_no_dev_and_packages(self, tmp_path):
         from_file = './tests/fixtures/uv_tools_migration/no_dev_and_packages/Pipfile'
         to_file = tmp_path / 'pyproject.toml'
