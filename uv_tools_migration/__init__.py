@@ -84,6 +84,6 @@ class UVToolsMigration:
             uv_data_toml = tomli_w.dumps(uv_data)
             f.write(uv_data_toml)
 
-            if packages_data['sources']:
+            if source_render.will_render:
                 uv_sources_toml = source_render.render()
                 f.write(uv_sources_toml)

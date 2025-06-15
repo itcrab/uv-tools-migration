@@ -12,6 +12,10 @@ class SourcesTomlRender:
 
         self._clean()
 
+    @property
+    def will_render(self):
+        return bool(self.sources)
+
     def _validate_version(self, version: dict[str, str | bool]) -> None:
         if self.git_key not in version:
             raise ValueError(f'Pipfile have no `git` link to the repository in this case: {version}')
@@ -29,7 +33,7 @@ class SourcesTomlRender:
             return f.read()
 
     def render(self) -> str:
-        if not self.sources:
+        if not self.will_render:
             return ''
 
         return jinja2.Template(self._read_template()).render(sources=self.sources)
